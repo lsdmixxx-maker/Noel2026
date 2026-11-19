@@ -60,6 +60,7 @@ button:disabled{opacity:.45;cursor:default}button.ready{border-color:#ffe36a;ani
 .wc b{display:block;font-size:13px;line-height:1.25}.wc small{display:block;color:#9fb0e8;font-size:10px;letter-spacing:1px;font-weight:800}.wc em{display:block;color:#ffe36a;font-style:normal;font-size:11px;margin:2px 0 5px}
 .linkbtn{display:inline-block;text-decoration:none;font-size:11px;padding:5px 10px;border-radius:7px;border:2px solid #ffe3c0;background:linear-gradient(180deg,#e0603f,#7a1c10);color:#fff;font-weight:800}.linkbtn:hover{filter:brightness(1.25)}
 
+.wishmsg{font-weight:700;color:#ffe36a;margin:12px auto 8px!important;line-height:1.4}
 /* ===== MODE PLEIN ÉCRAN MOBILE ===== */
 @media(max-width:820px){body{padding:8px}}
 .overlay{z-index:10}
@@ -91,7 +92,7 @@ body.focus .rotTip{display:none!important}
 </style>
 </head>
 <body>
-<div class="wish" id="wish" hidden><div class="panel"><b style="font-size:18px">🎁 MA LISTE AU PÈRE NOËL</b><p style="font-size:12px;color:#c6d0f5;margin:6px 0 0">Les vrais cadeaux que je voudrais. Chacun s'arrange avec les autres !</p><div class="wgrid" id="wgrid"></div><button class="primary" id="wclose">FERMER</button></div></div>
+<div class="wish" id="wish" hidden><div class="panel"><b style="font-size:18px">🎁 MA LISTE AU PÈRE NOËL</b><p style="font-size:12px;color:#c6d0f5;margin:6px 0 0">Des petits cadeaux dans lesquels piocher, si l’envie vous prend de m’offrir quelque chose. Chacun s'arrange avec les autres !</p><div class="wgrid" id="wgrid"></div><button class="primary" id="wclose">FERMER</button></div></div>
 <section class="home" id="accueil">
  <div class="nav"><div class="logo">FINAL <b>NOËL</b><small>CRISE AU PÔLE NORD</small></div><div><a href="#accueil">Le jeu</a><a href="#jeu">Les pilotes</a><a href="#classement">Classement</a><a href="#" id="wishLink" hidden>🎁 La liste</a></div></div>
  <div class="hero">
@@ -521,7 +522,7 @@ function omniTick(dt){poison=Math.max(0,poison-dt);slowT=Math.max(0,slowT-dt);or
  cacti=cacti.filter(c=>!c.hit&&c.y<570);
  hudT-=dt;if(hudT<=0){hudT=.25;updateHud()}}
 function levelUp(){level++;lives=Math.min(8,lives+1);score+=50;effects.push({x:playerX,y:395,text:'LEVEL UP !',label:'+50 pts · +1 PV · épée +8 %',color:'#ffe36a',life:1.6,duration:1.6});arp([523,659,784,1047],.08,'square',.06);updateHud()}
-function victoryHtml(){const f=gifts-opened;return '<div class="win"><div class="wl">'+pilots[selected].name+' remporte le combat !</div>'+(()=>{try{localStorage.setItem('ccWish','1')}catch(e){}return ''})()+'<table><tr><td>NIVEAU</td><td>'+level+'</td></tr><tr><td>OBJETS</td><td>🎁 '+gifts+' · 🔑 '+keys+' · 🔓 '+opened+'</td></tr><tr><td>CROTTES TRANCHÉES</td><td>'+shot+'</td></tr></table><p>'+(f<=0?'Tous les cadeaux ont pu être ouverts !':f+' cadeau(x) restent fermé(s), faute de clé.')+'</p><button class="primary" onclick="openWish()">🎁 MA LISTE AU PÈRE NOËL</button></div>'}
+function victoryHtml(){const f=gifts-opened;return '<div class="win"><div class="wl">'+pilots[selected].name+' remporte le combat !</div>'+(()=>{try{localStorage.setItem('ccWish','1')}catch(e){}return ''})()+'<table><tr><td>NIVEAU</td><td>'+level+'</td></tr><tr><td>OBJETS</td><td>🎁 '+gifts+' · 🔑 '+keys+' · 🔓 '+opened+'</td></tr><tr><td>CROTTES TRANCHÉES</td><td>'+shot+'</td></tr></table><p>'+(f<=0?'Tous les cadeaux ont pu être ouverts !':f+' cadeau(x) restent fermé(s), faute de clé.')+'</p><p class="wishmsg">Si vous avez aimé mon mini jeu, voici une liste de petits cadeaux dans lesquels vous pouvez piocher si vous voulez m’offrir quelque chose.</p><button class="primary" onclick="openWish()">🎁 VOIR LA LISTE DE CADEAUX</button></div>'}
 function drawOver(){const T=performance.now()/1000;
  for(const o of orbs){const t=1-o.life/o.d,y=o.y-t*60;ctx.save();ctx.globalAlpha=Math.min(1,o.life/o.d*2);const g=ctx.createRadialGradient(o.x-4,y-4,2,o.x,y,15);g.addColorStop(0,'#fff');g.addColorStop(.35,o.c);g.addColorStop(1,'#0a0a30');ctx.shadowColor=o.c;ctx.shadowBlur=24;ctx.fillStyle=g;ctx.beginPath();ctx.arc(o.x,y,14,0,7);ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#c8ccd6';ctx.stroke();ctx.restore()}
  for(const c of cacti)drawCactus(c);
