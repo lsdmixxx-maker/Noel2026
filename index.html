@@ -59,6 +59,35 @@ button:disabled{opacity:.45;cursor:default}button.ready{border-color:#ffe36a;ani
 .wi{flex:0 0 66px;height:66px;border:2px solid #e9c46a;border-radius:8px;background:radial-gradient(circle at 35% 30%,#4a56d8,#0a0a5a);padding:3px}.wi svg{width:100%;height:100%;filter:drop-shadow(0 2px 0 #0008)}
 .wc b{display:block;font-size:13px;line-height:1.25}.wc small{display:block;color:#9fb0e8;font-size:10px;letter-spacing:1px;font-weight:800}.wc em{display:block;color:#ffe36a;font-style:normal;font-size:11px;margin:2px 0 5px}
 .linkbtn{display:inline-block;text-decoration:none;font-size:11px;padding:5px 10px;border-radius:7px;border:2px solid #ffe3c0;background:linear-gradient(180deg,#e0603f,#7a1c10);color:#fff;font-weight:800}.linkbtn:hover{filter:brightness(1.25)}
+
+/* ===== MODE PLEIN ÉCRAN MOBILE ===== */
+@media(max-width:820px){body{padding:8px}}
+.overlay{z-index:10}
+.fbtn{display:none}
+.stage #limitBtn{position:absolute;top:calc(17% + 2px);left:8px;z-index:5;padding:7px 11px;font-size:12px;flex:none}
+.stage #quitBtn{position:absolute;top:8px;right:8px;z-index:20;padding:6px 10px;font-size:11px;opacity:.85}
+body.focus .stage #quitBtn{display:block}
+.rotTip{display:none;text-align:center;font-size:12px;color:#ffd66b;font-weight:700}
+body.focus{overflow:hidden;padding:0;overscroll-behavior:none}
+body.focus #jeu{position:fixed;inset:0;z-index:30;max-width:none;margin:0;padding:6px;gap:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#0f3a3f 0%,#06121a 55%,#02060a 100%)}
+body.focus #jeu>.panel:first-child,body.focus .hint{display:none}
+body.focus:not(.land) .rotTip{display:block}
+body.focus .hud{width:100%;font-size:11px;padding:5px 8px;gap:3px 8px;border-width:2px;border-radius:8px;box-shadow:none}
+body.focus .bar i{width:54px}
+body.focus .controls{width:100%;gap:6px}
+body.focus .controls button{padding:6px 8px;font-size:12px}
+body.focus .stage{flex:none;border-width:2px;border-radius:8px}
+body.focus .overlay{padding:8px}
+body.focus .overlay>div{padding:10px 14px}
+body.focus .overlay p{font-size:12px;margin:4px auto;line-height:1.35}
+body.focus .overlay h1{font-size:18px;margin:4px}
+body.focus.land #jeu{display:grid;grid-template-columns:minmax(0,1fr) 124px;grid-template-rows:auto 1fr;align-items:start;justify-items:stretch;align-content:stretch}
+body.focus.land .stage{grid-column:1;grid-row:1/3;justify-self:center;align-self:center}
+body.focus.land .hud{grid-column:2;grid-row:1;flex-direction:column;flex-wrap:nowrap;justify-content:flex-start;align-items:flex-start;gap:2px;width:auto;overflow:hidden}
+body.focus.land .controls{grid-column:2;grid-row:2;flex-direction:column;align-self:end;width:auto}
+body.focus.land #padrow{display:none}
+body.focus.rot #jeu{inset:auto;top:0;left:0;transform-origin:top left;transform:rotate(90deg) translateY(-100%)}
+body.focus .rotTip{display:none!important}
 </style>
 </head>
 <body>
@@ -81,9 +110,10 @@ button:disabled{opacity:.45;cursor:default}button.ready{border-color:#ffe36a;ani
 <div class="game" id="jeu">
  <section class="panel"><b>01 — CHOISIS TON PILOTE</b><div style="display:flex;align-items:center;gap:12px;margin-top:10px"><div id="preview" style="width:76px;height:84px;text-align:center"></div><div><b id="pilotName">Vincent</b><div id="pilotDesc" style="font-size:12px">Prêt à prendre les commandes !</div></div></div><div class="characters" id="characters"></div></section>
  <div class="hud"><span>⭐ <b id="score">0</b></span><span>🎁 <b id="gifts">0 attrapé(s)</b></span><span>🔑 <b id="keys">0 trouvée(s)</b></span><span>🔓 <b id="opened">0 ouvert(s)</b></span><span>💩 <b id="avoided">0</b></span><span>〰️ <b id="shot">0</b></span><span class="bar">PV <i><u id="hpBar" style="width:100%"></u></i> <b id="lives">5</b></span><span class="bar lim">LIMITE <i><u id="limBar"></u></i></span><span>LV <b id="lv">1</b></span><span id="statusTag" style="color:#8dff6a"></span><span>⚡ <b id="speed">×1.0</b></span></div>
- <div class="stage"><canvas id="gameCanvas" width="960" height="540"></canvas><div class="overlay" id="overlay"><div><div style="font-size:40px">🎅 🦌 🎁</div><h1 id="overlayTitle">Pluie de cadeaux</h1><p id="overlayText">Attrape les cadeaux et les clés qui vont avec. ⚠️ Évite de recevoir une crotte sur la tête (−1 PV, et poison !)… mais tranche-les à l’épée, car les rennes ont mangé les clés ! Chaque cadeau vaut 10 points, chaque crotte tranchée 1 point et chaque paire clé + cadeau 10 points bonus. La partie se termine quand tes PV sont épuisés. Les crottes tranchées cachent parfois une clé ou un orbe magique (vert : soin, bleu : ralentissement, jaune : foudre). Chaque coup remplit la jauge LIMITE : à 100 %, lance l’Omnislash avec E ou le bouton ! 🌵 Rarement, une crotte cache des cactus indestructibles : esquive-les ! Chaque cadeau ouvert accélère le rythme de 10 %.</p><div id="scoreTable"></div><button class="primary" id="start">LANCER LA COURSE</button></div></div></div>
+ <div class="stage"><canvas id="gameCanvas" width="960" height="540"></canvas><button id="quitBtn" class="fbtn">✕ QUITTER</button><div class="overlay" id="overlay"><div><div style="font-size:40px">🎅 🦌 🎁</div><h1 id="overlayTitle">Pluie de cadeaux</h1><p id="overlayText">Attrape les cadeaux et les clés qui vont avec. ⚠️ Évite de recevoir une crotte sur la tête (−1 PV, et poison !)… mais tranche-les à l’épée, car les rennes ont mangé les clés ! Chaque cadeau vaut 10 points, chaque crotte tranchée 1 point et chaque paire clé + cadeau 10 points bonus. La partie se termine quand tes PV sont épuisés. Les crottes tranchées cachent parfois une clé ou un orbe magique (vert : soin, bleu : ralentissement, jaune : foudre). Chaque coup remplit la jauge LIMITE : à 100 %, lance l’Omnislash avec E ou le bouton ! 🌵 Rarement, une crotte cache des cactus indestructibles : esquive-les ! Chaque cadeau ouvert accélère le rythme de 10 %.</p><div id="scoreTable"></div><button class="primary" id="start">LANCER LA COURSE</button></div></div></div>
  <div class="controls"><button id="limitBtn" disabled style="flex:0 0 auto">⚔️ LIMITE</button><button id="pause">Ⅱ PAUSE</button><button id="reset">↻ RECOMMENCER</button><button id="mute" style="flex:0 0 auto" title="Son">🔊</button></div>
- <div class="controls"><button id="left">◀ GAUCHE</button><button id="right">DROITE ▶</button></div>
+ <div class="controls" id="padrow"><button id="left">◀ GAUCHE</button><button id="right">DROITE ▶</button></div>
+ <div class="rotTip" id="rotTip">↻ Tourne ton téléphone en mode paysage pour agrandir le jeu</div>
  <div class="hint">PC : flèches ou A / D pour bouger · <span class="laser-hint">CLIC ou ESPACE pour un coup d'épée Buster · <b>E</b> : Omnislash (jauge LIMITE pleine)</span><br>Mobile : fais glisser ton doigt sur la scène pour bouger (ou utilise les boutons), tape sur la scène pour donner un coup d'épée</div>
 </div>
 <script>
@@ -422,9 +452,9 @@ let activeSlashes=[];for(let b of slashes){b.life-=dt;if(b.life>0)activeSlashes.
 $('mute').onclick=()=>{soundOn=!soundOn;$('mute').textContent=soundOn?'🔊':'🔇';if(soundOn)sfx('gift')};$('start').onclick=()=>{if(mode==='paused')resume();else start()};$('reset').onclick=reset;$('pause').onclick=()=>{if(mode==='playing'){mode='paused';if(rafPending)cancelAnimationFrame(raf);rafPending=false;leftDown=false;rightDown=false;$('overlayTitle').textContent='Petite pause';$('overlayText').textContent='La tournée attend ton retour.';$('start').textContent='REPRENDRE';$('overlay').style.display='flex'}else if(mode==='paused')resume()};
 function key(e,on){let k=e.key.toLowerCase();if(on&&k==='e')omnislash();if(['arrowleft','arrowright',' '].includes(k))e.preventDefault();if(k==='arrowleft'||k==='a')leftDown=on;if(k==='arrowright'||k==='d')rightDown=on;if(on&&k===' '&&mode==='playing')swing()}window.addEventListener('keydown',e=>key(e,true));window.addEventListener('keyup',e=>key(e,false));window.addEventListener('blur',()=>{leftDown=false;rightDown=false});document.addEventListener('visibilitychange',()=>{if(document.hidden&&mode==='playing'){$('pause').click()}});
 [['left','left'],['right','right']].forEach(([id,d])=>{let b=$(id);b.onpointerdown=e=>{e.preventDefault();if(d==='left')leftDown=true;else rightDown=true};['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{if(d==='left')leftDown=false;else rightDown=false}))});
-function move(e){let r=canvas.getBoundingClientRect();playerX=(e.clientX-r.left)/r.width*W}let dragId=null,dragStartX=0,dragPlayerX=0,dragged=false;
-canvas.onpointerdown=e=>{if(mode!=='playing')return;if(e.pointerType==='mouse'){swing();return}dragId=e.pointerId;dragStartX=e.clientX;dragPlayerX=playerX;dragged=false;try{canvas.setPointerCapture(e.pointerId)}catch(_){}};
-canvas.onpointermove=e=>{if(e.pointerId!==dragId||mode!=='playing')return;let dx=e.clientX-dragStartX;if(!dragged&&Math.abs(dx)<8)return;dragged=true;let r=canvas.getBoundingClientRect();playerX=Math.max(32,Math.min(928,dragPlayerX+dx/r.width*W))};
+function move(e){let r=canvas.getBoundingClientRect();playerX=(e.clientX-r.left)/r.width*W}let dragId=null,dragStartX=0,dragStartY=0,dragPlayerX=0,dragged=false;
+canvas.onpointerdown=e=>{if(mode!=='playing')return;if(e.pointerType==='mouse'){swing();return}dragId=e.pointerId;dragStartX=e.clientX;dragStartY=e.clientY;dragPlayerX=playerX;dragged=false;try{canvas.setPointerCapture(e.pointerId)}catch(_){}};
+canvas.onpointermove=e=>{if(e.pointerId!==dragId||mode!=='playing')return;let rot=document.body.classList.contains('rot'),dx=rot?e.clientY-dragStartY:e.clientX-dragStartX;if(!dragged&&Math.abs(dx)<8)return;dragged=true;let r=canvas.getBoundingClientRect();playerX=Math.max(32,Math.min(928,dragPlayerX+dx/(rot?r.height:r.width)*W))};
 canvas.onpointerup=e=>{if(e.pointerId===dragId){if(!dragged&&mode==='playing')swing();dragId=null}};
 canvas.onpointercancel=()=>{dragId=null};
 $('preview').innerHTML=AVATARS[pilots[selected].name];reset();
@@ -534,6 +564,42 @@ $('wclose').onclick=closeWish;$('wish').onclick=e=>{if(e.target===$('wish'))clos
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeWish()});
 try{if(localStorage.getItem('ccWish')){$('wishLink').hidden=false}}catch(e){}
 $('wishLink').onclick=e=>{e.preventDefault();openWish()};
+
+// ===== MODE PLEIN ÉCRAN SUR MOBILE =====
+(function(){
+ const stageEl=document.querySelector('.stage'),limBtn=$('limitBtn'),row=limBtn.parentNode,body=document.body;
+ const touchy=()=>matchMedia('(pointer:coarse)').matches||innerWidth<=820;
+ function fit(){
+  if(!body.classList.contains('focus'))return;
+  const g=$('jeu'),rot=innerHeight>innerWidth&&matchMedia('(pointer:coarse)').matches;
+  body.classList.toggle('rot',rot);
+  g.style.width=rot?innerHeight+'px':'';g.style.height=rot?innerWidth+'px':'';
+  const land=g.clientWidth>g.clientHeight;
+  body.classList.toggle('land',land);
+  stageEl.style.width='';
+  const cs=getComputedStyle(g),padH=parseFloat(cs.paddingLeft)*2,padV=parseFloat(cs.paddingTop)*2,gap=parseFloat(cs.rowGap)||0;
+  let aw,ah;
+  if(land){aw=g.clientWidth-padH-124-gap;ah=g.clientHeight-padV}
+  else{let used=0,n=0;[...g.children].forEach(c=>{if(c!==stageEl&&c.offsetHeight){used+=c.offsetHeight;n++}});aw=g.clientWidth-padH;ah=g.clientHeight-padV-used-gap*(n+0)}
+  stageEl.style.width=Math.max(160,Math.min(aw,(ah-4)*16/9+4))+'px';
+ }
+ function enter(){
+  if(body.classList.contains('focus'))return;
+  body.classList.add('focus');stageEl.appendChild(limBtn);fit();
+  try{const d=document.documentElement;if(d.requestFullscreen&&!document.fullscreenElement)d.requestFullscreen({navigationUI:'hide'}).then(()=>{try{screen.orientation.lock('landscape').catch(()=>{})}catch(e){}setTimeout(fit,200)}).catch(()=>{})}catch(e){}
+ }
+ function leave(){
+  if(!body.classList.contains('focus'))return;
+  if(mode==='playing')$('pause').click();
+  body.classList.remove('focus','land','rot');row.insertBefore(limBtn,row.firstChild);stageEl.style.width='';const jg=$('jeu');jg.style.width='';jg.style.height='';try{screen.orientation.unlock()}catch(e){}
+  try{if(document.fullscreenElement)document.exitFullscreen()}catch(e){}
+  $('jeu').scrollIntoView();
+ }
+ $('quitBtn').onclick=leave;
+ $('start').addEventListener('click',()=>{if(touchy()&&mode==='playing')enter()});
+ addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,250));
+ if(window.visualViewport)visualViewport.addEventListener('resize',fit);
+})();
 </script>
 </body>
 </html>
